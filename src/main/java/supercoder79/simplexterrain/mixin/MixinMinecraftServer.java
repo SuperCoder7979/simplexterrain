@@ -7,12 +7,14 @@ import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListenerFactory;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.UserCache;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.SaveProperties;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.level.ServerWorldProperties;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,15 +39,17 @@ public class MixinMinecraftServer {
         }
     }
 
-    @Redirect(method = "setupSpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/BiomeSource;locateBiome(IIIILjava/util/function/Predicate;Ljava/util/Random;)Lnet/minecraft/util/math/BlockPos;"))
-    private static BlockPos fixDumbServerCrash(BiomeSource biomeSource, int x, int y, int z, int radius, Predicate<Biome> target, Random random) {
-        //TODO: unfuck this code
+    @Redirect(method = "setupSpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/BiomeSource;locateBiome(IIIILjava/util/List;Ljava/util/Random;)Lnet/minecraft/util/math/BlockPos;"))
+    private static BlockPos fixDumbServerCrash(BiomeSource biomeSource, int x, int y, int z, int radius, List<Biome> biomes, Random random, ServerWorld serverWorld, ServerWorldProperties serverWorldProperties, boolean bl, boolean bl2, boolean bl3) {
         try {
-            return biomeSource.locateBiome(x, y, z, radius, target, random);
+            SimplexChunkGenerator.init(serverWorld.getSeed());
+            return biomeSource.locateBiome(x, y, z, radius, biomes, random);
         } catch (Exception e) {
             System.out.println("[Simplex Terrain] If your server stalls here i'm really sorry but you're gonna have to kill it and restart it.");
             System.out.println("[Simplex Terrain] I have no clue why this happens but it does.");
             System.out.println("[Simplex Terrain] I'll try to get it fixed, but for now this is the workaround - SuperCoder79");
+            System.out.println("[Simplex Terrain] If somehow this still triggers then I don't even understand anything anymore - Arc'blroth");
+            e.printStackTrace();
             return new BlockPos(0, 63, 0);
         }
     }

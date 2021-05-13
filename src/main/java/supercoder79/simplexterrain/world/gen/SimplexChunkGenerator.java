@@ -67,11 +67,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 	public SimplexChunkGenerator(BiomeSource biomeSource, long seed) {
 		super(biomeSource, new StructuresConfig(true));
 
-		noisePostProcesors.forEach(postProcessor -> postProcessor.init(seed));
-		carverPostProcesors.forEach(postProcessor -> postProcessor.init(seed));
-		featurePostProcesors.forEach(postProcessor -> postProcessor.init(seed));
-		noiseModifiers.forEach(noiseModifier -> noiseModifier.init(seed));
-
+		init(seed);
 		ChunkRandom random = new ChunkRandom(seed);
 		this.biomeSource = biomeSource;
 
@@ -91,6 +87,14 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 		//TODO remove
 		THIS = this;
+	}
+
+	// public for usage in MixinMinecraftServer#fixDumbServerCrash
+	public static void init(long seed) {
+		noisePostProcesors.forEach(postProcessor -> postProcessor.init(seed));
+		carverPostProcesors.forEach(postProcessor -> postProcessor.init(seed));
+		featurePostProcesors.forEach(postProcessor -> postProcessor.init(seed));
+		noiseModifiers.forEach(noiseModifier -> noiseModifier.init(seed));
 	}
 
 	public static void addTerrainPostProcessor(TerrainPostProcessor postProcessor) {
