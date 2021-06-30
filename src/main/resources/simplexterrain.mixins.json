@@ -12,8 +12,7 @@
     "optichunk.MixinChunkSection"
   ],
   "client": [
-    "client.MixinSkyProperties",
-    "client.MixinMinecraftClient"
+    "client.MixinSkyProperties"
   ],
   "injectors": {
     "defaultRequire": 1

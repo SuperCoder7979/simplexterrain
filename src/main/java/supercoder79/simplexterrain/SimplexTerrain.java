@@ -8,7 +8,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.BiomeKeys;
 import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
-import supercoder79.simplexterrain.client.GoVote;
 import supercoder79.simplexterrain.command.MapHeightmapCommand;
 import supercoder79.simplexterrain.command.MapNoiseTypeCommand;
 import supercoder79.simplexterrain.command.ReloadConfigCommand;
@@ -68,7 +67,6 @@ public class SimplexTerrain implements ModInitializer {
 		ConfigHelper.init();
 
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-			GoVote.init();
 			levelGeneratorType = new SimplexWorldType();
 		}
 
